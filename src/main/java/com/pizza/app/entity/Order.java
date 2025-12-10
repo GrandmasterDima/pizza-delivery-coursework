@@ -1,0 +1,46 @@
+package com.pizza.app.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+@Entity
+@Table(name = "orders")
+@Data
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private User client;
+
+    @ManyToOne
+    @JoinColumn(name = "car_id")
+    private Car car;
+
+    @Column(name = "order_date")
+    private LocalDate date = LocalDate.now();
+
+    @Column(name = "delivery_time")
+    private LocalTime deliveryTime;
+
+    @Column(name = "delivery_address", nullable = false)
+    private String deliveryAddress;
+
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount = BigDecimal.ZERO;
+
+    @Column(name = "order_status", nullable = false)
+    private OrderStatus status;
+
+    public enum OrderStatus {
+        new_order, being_cooked, being_delivered, delivered
+    }
+}

@@ -13,8 +13,8 @@ function renderCart() {
         return;
     }
 
-    let html = '';
-    let total = 0;
+    let html = ''; //Для html
+    let total = 0; //Для загальної вартості
     let allPrices = []; //Масив для зберігання цін кожної окремої піци
 
     // Проходимося по кожному товару
@@ -101,52 +101,102 @@ function clearCart() {
         renderCart(); // Перемальовуємо
     }
 }
-
-//Функція для відправки на сервер
+// Функція для відправки зібраної інформації  на сервер
+// async використали, щоб функція виконувалась асинхронно, тобто не блокувала сторінку, поки чекає відповідь сервера
 async function submitOrder() {
+
+    // Перевіряємо кошик
+    // Дістаємо кошик із пам'яті браузера. Якщо там нічого немає (null), створюємо порожній масив [].
     const cart = JSON.parse(localStorage.getItem('pizzaCart')) || [];
-    const address = document.getElementById('clientAddress').value;
-    const clientId = document.getElementById('clientId').value;
 
-    //Перевірки
-    if (cart.length === 0) { alert('Кошик порожній!'); return; }
-    if (!address) { alert('Введіть адресу!'); return; }
+    // Якщо довжина масиву 0 — значить кошик порожній. Зупиняємо функцію.
+    if (cart.length === 0) {
+        alert('Кошик порожній!');
+        return;
+    }
 
-    //Підготовка даних для Java-контролера
-    //Перетворюємо [{id:1, quantity:2}] -> [1, 1]
+    // Перевіряємо адресу
+    // Шукаємо поле вводу в HTML за його ID
+    const addressInput = document.getElementById('clientAddress');
+
+    // Захист від помилок: якщо ми раптом змінили HTML і видалили це поле,
+    // код не впаде, а повідомить про помилку.
+    if (!addressInput) {
+        alert("Помилка: Не знайдено поле адреси!");
+        return;
+    }
+
+    // Беремо текст, який ввів користувач
+    const address = addressInput.value;
+
+    // Якщо рядок порожній — сваримось.
+    if (!address) {
+        alert('Будь ласка, введіть адресу!');
+        return;
+    }
+
+    // Перевіряємо Авторизацію
+    // Дістаємо об'єкт поточного користувача, який ми зберегли при вході (Login)
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+
+    // Якщо user  null АБО у нього немає ID — значить він не залогінений.
+    if (!user || !user.id) {
+        alert("Будь ласка, увійдіть в систему, щоб зробити замовлення!");
+        // Перенаправляємо користувача на сторінку входу
+        window.location.href = '/login';
+        return;
+    }
+
+    // Маппінг
+    // Нам треба перетворити формат даних кошика в той формат, який чекає Java-сервер.
+    // У кошику: [{id: 1, quantity: 2}] -> Це означає "Піца №1 у кількості 2 шт"
+    // Сервер чекає: [1, 1] -> Просто список ID
+
     let pizzaIds = [];
     cart.forEach(item => {
+        // Цикл крутиться стільки разів, скільки піц цього виду замовили (item.quantity)
         for(let i=0; i < item.quantity; i++) {
+            // parseInt гарантує, що ми відправляємо число, а не рядок
             pizzaIds.push(parseInt(item.id));
         }
     });
 
-    // Об'єкт, який чекає OrderController.java
+    // Формуємо фінальний об'єкт (JSON), який полетить на сервер.
     const orderData = {
-        clientId: parseInt(clientId),
+        clientId: parseInt(user.id),
         address: address,
         pizzaIds: pizzaIds
     };
 
+    // Відправляємо на сервер
     try {
-        // Відправляємо POST запит
+        // fetch - це запит в інтернет (на наш сервер)
+        // await означає чекай, поки сервер відповість, перш ніж йти далі
         const response = await fetch('/api/orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
+            method: 'POST', // Метод відправки даних
+            headers: { 'Content-Type': 'application/json' }, // Кажемо серверу, що шлемо JSON
+            body: JSON.stringify(orderData) // Перетворюємо об'єкт JS у текстовий рядок JSON
         });
 
+        // response.ok = true, якщо статус відповіді 200-299 (Успіх)
         if (response.ok) {
+            // Читаємо відповідь сервера (там має бути ID замовлення і сума)
             const result = await response.json();
-            alert(`Замовлення №${result.id} успішно створено!`);
-            localStorage.removeItem('pizzaCart'); // Чистимо кошик після успіху
-            window.location.href = '/'; // Переходимо на головну
+            alert(`Замовлення №${result.id} успішно прийнято! Сума: ${result.totalAmount} грн`);
+
+            //Очищаємо кошик тільки після успішного замовлення!
+            localStorage.removeItem('pizzaCart');
+
+            // Повертаємо користувача на головну сторінку
+            window.location.href = '/';
         } else {
-            alert('Помилка сервера!');
+            // Якщо сервер повернув помилку
+            alert('Помилка сервера. Спробуйте пізніше.');
         }
     } catch (e) {
+        // Цей блок спрацює, якщо інтернет зник або сервер взагалі вимкнений
         console.error(e);
-        alert('Щось пішло не так...');
+        alert('Не вдалося з\'єднатися з сервером.');
     }
 }
 //Запускаємо рендер при відкритті сторінки

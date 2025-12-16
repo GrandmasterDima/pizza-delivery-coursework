@@ -15,7 +15,7 @@
 <body>
 <header class="header">
     <div class="header-logo">
-        <a href="./index.html"><img th:src="@{/images/Logo.svg}" alt="" /></a>
+        <a href="/"><img th:src="@{/images/Logo.svg}" alt="" /></a>
     </div>
     <nav class="header-navigation">
         <a href="#">Меню</a>
@@ -23,13 +23,17 @@
         <a href="#">Контакти</a>
     </nav>
     <div class="header-user-actions">
-        <svg class="header-cart" width="36" height="36">
-            <use th:href="@{/images/icons.svg#cart}"></use>
-        </svg>
+        <div id="cart-wrapper" style="position: relative; cursor: pointer; margin-right: 15px;">
+            <svg class="header-cart" width="36" height="36">
+                <use th:href="@{/images/icons.svg#cart}"></use>
+            </svg>
+        </div>
 
-        <svg class="header-user" width="36" height="36">
-            <use th:href="@{/images/icons.svg#user}"></use>
-        </svg>
+        <div id="user-wrapper" style="cursor: pointer; display: flex; align-items: center;">
+            <svg class="header-user" width="36" height="36">
+                <use th:href="@{/images/icons.svg#user}"></use>
+            </svg>
+        </div>
     </div>
 </header>
 

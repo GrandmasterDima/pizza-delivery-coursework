@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Реєстрація - PizzaGo</title>
+    <link rel="stylesheet" th:href="@{/styles/client-styles.css}" />
+    <link rel="stylesheet" th:href="@{/styles/auth.css}" />
+</head>
+<body>
+
+<header class="header">
+    <div class="header-logo"><a href="/"><img th:src="@{/images/Logo.svg}" alt="" /></a></div>
+    <nav class="header-navigation"><a href="/"> &larr; На головну</a></nav>
+</header>
+
+<div class="auth-container">
+    <h2>Створити акаунт</h2>
+    <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+            <label>Логін (для входу)</label>
+            <input type="text" id="login" required placeholder="user123">
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" id="password" required placeholder="********">
+        </div>
+        <div class="form-group">
+            <label>Ім'я</label>
+            <input type="text" id="name" required placeholder="Борис Боринос">
+        </div>
+        <div class="form-group">
+            <label>Телефон</label>
+            <input type="text" id="phone" required placeholder="+380...">
+        </div>
+        <div class="form-group">
+            <label>Адреса (за замовчуванням)</label>
+            <input type="text" id="address" required placeholder="м. Київ, вул...">
+        </div>
+
+        <button type="submit" class="btn-auth">Зареєструватися</button>
+    </form>
+
+    <div class="auth-link">
+        Вже маєте акаунт? <a href="/login">Увійти</a>
+    </div>
+</div>
+
+<script th:src="@{/js/register.js}"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід - PizzaGo</title>
+    <link rel="stylesheet" th:href="@{/styles/client-styles.css}" />
+    <link rel="stylesheet" th:href="@{/styles/auth.css}" />
+</head>
+<body>
+
+<header class="header">
+    <div class="header-logo"><a href="/"><img th:src="@{/images/Logo.svg}" alt="" /></a></div>
+    <nav class="header-navigation"><a href="/"> &larr; На головну</a></nav>
+</header>
+
+<div class="auth-container">
+    <h2>Вхід в систему</h2>
+    <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label>Логін</label>
+            <input type="text" id="login" required placeholder="Введіть логін">
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" id="password" required placeholder="Введіть пароль">
+        </div>
+        <button type="submit" class="btn-auth">Увійти</button>
+    </form>
+    <div class="auth-link">
+        Немає акаунту? <a href="/register">Зареєструватися</a>
+    </div>
+</div>
+
+<script th:src="@{/js/login.js}"></script>
+</body>
+</html>

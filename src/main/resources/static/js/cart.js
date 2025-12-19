@@ -1,205 +1,150 @@
-// Головна функція  відмальовує кошик
 function renderCart() {
-    //Дістаємо дані з пам'яті браузера або беремо пустий масив
     const cart = JSON.parse(localStorage.getItem('pizzaCart')) || [];
-    //Знаходимо куди вставляти піци і де писати суму
+
     const container = document.getElementById('cart-items-list');
+    const clearBtn = document.querySelector('.btn-clear');
+
+    const checkoutSection = document.querySelector('.checkout-section');
     const totalSection = document.querySelector('.total-section');
 
-    // Якщо кошик порожній - виводимо повідомлення
+    // --- ЛОГІКА ДЛЯ ПОРОЖНЬОГО КОШИКА ---
     if (cart.length === 0) {
-        container.innerHTML = '<p style="text-align: center; padding: 20px;">Кошик порожній 😔</p>';
-        totalSection.innerHTML = 'Всього: <span id="cart-total">0</span> ₴';
+        container.innerHTML = `
+            <div class="empty-cart-wrapper">
+                <div class="empty-icon">🍕</div>
+                <h3 class="empty-title">Ой, тут порожньо!</h3>
+                <p class="empty-subtitle">Виглядає так, ніби ви ще не обрали свою ідеальну піцу. Саме час це виправити!</p>
+                <a href="/" class="btn-back-to-menu">Перейти до меню</a>
+            </div>
+        `;
+
+        if (checkoutSection) checkoutSection.classList.add("hidden");
+        if (clearBtn) clearBtn.style.display = "none";
+        document.querySelector('.discount-wrapper')?.remove();
         return;
     }
 
-    let html = ''; //Для html
-    let total = 0; //Для загальної вартості
-    let allPrices = []; //Масив для зберігання цін кожної окремої піци
-
-    // Проходимося по кожному товару
+    // --- ЯКЩО ТОВАРИ Є ---
+    if (checkoutSection) checkoutSection.classList.remove("hidden");
+    if (clearBtn) clearBtn.style.display = 'block';
+    let html = '';
+    let total = 0;
+    let allPrices = [];
     cart.forEach((item, index) => {
-        // Рахуємо загальну вартість
-        total += item.price * item.quantity;
-
-        //Наприклад якщо замовили 2 піци по 200 грн, додаємо в масив: [200, 200]
-        // Це потрібно, щоб потім знайти найменшу ціну серед всіх піц
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
         for (let i = 0; i < item.quantity; i++) {
             allPrices.push(parseFloat(item.price));
         }
-
-        // Формуємо HTML для однієї піци (картинка, назва, кнопки +/-)
         html += `
             <div class="cart-item">
                 <img src="${item.img}" alt="${item.name}">
                 <div class="item-info">
-                    <h3>${item.name}</h3>
+                    <h4>${item.name}</h4>
                     <p>${item.price} ₴</p>
                 </div>
                 <div class="item-controls">
-                    <button onclick="changeQty(${index}, -1)">-</button>
-                    <span style="margin: 0 10px; font-weight: bold;">${item.quantity}</span>
+                    <button onclick="changeQty(${index}, -1)">−</button>
+                    <span class="item-count">${item.quantity}</span>
                     <button onclick="changeQty(${index}, 1)">+</button>
                 </div>
             </div>
         `;
     });
 
-    // Вставляємо згенерований HTML на сторінку
     container.innerHTML = html;
 
-    // Логіка акції "10+1"
+    // --- ЛОГІКА АКЦІЇ ---
+    document.querySelector('.discount-wrapper')?.remove();
     if (allPrices.length >= 11) {
-        // Знаходимо найменше число в масиві цін
         const minPrice = Math.min(...allPrices);
-        // Віднімаємо його від загальної суми
         const finalTotal = total - minPrice;
 
-        //Відмальовуємо блок зі знижкою
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'discount-wrapper';
+        msgDiv.innerHTML = `<div class="discount-message">✅ Акція "10+1": мінус ${minPrice} грн</div>`;
+        if (totalSection && totalSection.parentNode) {
+             totalSection.parentNode.insertBefore(msgDiv, totalSection);
+        }
         totalSection.innerHTML = `
-            <div class="discount-message">
-                Вітаємо Акція "10+1": Знижка <b>-${minPrice} ₴</b> активована!
-            </div>
-            <div style="margin-top: 5px;">
-                Всього: <span class="old-price">${total}</span>
-                <span class="final-price">${finalTotal}</span> ₴
+            <span class="total-label">Всього до сплати:</span>
+            <div class="price-container">
+                <span class="old-price">${total}</span>
+                <span class="final-price">${finalTotal} ₴</span>
             </div>
         `;
     } else {
-        // Якщо піц менше 11 - показуємо звичайну суму
-        totalSection.innerHTML = `Всього: <span id="cart-total" style="font-weight: bold; font-size: 24px;">${total}</span> ₴`;
+        totalSection.innerHTML = `
+            <span class="total-label">Всього до сплати:</span>
+            <span class="total-price">${total} ₴</span>
+        `;
     }
 }
 
-//Функція для зміни кількості піц
+// --- ЗМІНА КІЛЬКОСТІ ---
 function changeQty(index, change) {
     let cart = JSON.parse(localStorage.getItem('pizzaCart'));
-
-    // Змінюємо кількість (+1 або -1)
     cart[index].quantity += change;
 
-    // Якщо стало 0 або менше - видаляємо товар з масиву
     if (cart[index].quantity <= 0) {
         cart.splice(index, 1);
     }
 
-    // Зберігаємо назад у браузер і перемальовуємо екран
     localStorage.setItem('pizzaCart', JSON.stringify(cart));
     renderCart();
 }
 
-//Функція для повного очищення
+
+// --- ОЧИЩЕННЯ КОШИКА ---
 function clearCart() {
     const cart = JSON.parse(localStorage.getItem('pizzaCart')) || [];
-    if (cart.length === 0) {
-        alert("Кошик вже порожній!");
-        return;
-    }
-    // Питаємо підтвердження
-    if (confirm("Ви впевнені, що хочете повністю очистити кошик?")) {
-        localStorage.removeItem('pizzaCart'); // Видаляємо все
-        renderCart(); // Перемальовуємо
+    if (cart.length === 0) return;
+
+    if (confirm("Очистити кошик?")) {
+        localStorage.removeItem('pizzaCart');
+        document.querySelector('.discount-wrapper')?.remove();
+        renderCart();
     }
 }
-// Функція для відправки зібраної інформації  на сервер
-// async використали, щоб функція виконувалась асинхронно, тобто не блокувала сторінку, поки чекає відповідь сервера
-async function submitOrder() {
 
-    // Перевіряємо кошик
-    // Дістаємо кошик із пам'яті браузера. Якщо там нічого немає (null), створюємо порожній масив [].
+
+// --- ВІДПРАВКА ЗАМОВЛЕННЯ ---
+async function submitOrder() {
     const cart = JSON.parse(localStorage.getItem('pizzaCart')) || [];
 
-    // Якщо довжина масиву 0 — значить кошик порожній. Зупиняємо функцію.
     if (cart.length === 0) {
         alert('Кошик порожній!');
         return;
     }
 
-    // Перевіряємо адресу
-    // Шукаємо поле вводу в HTML за його ID
     const addressInput = document.getElementById('clientAddress');
-
-    // Захист від помилок: якщо ми раптом змінили HTML і видалили це поле,
-    // код не впаде, а повідомить про помилку.
-    if (!addressInput) {
-        alert("Помилка: Не знайдено поле адреси!");
+    if (!addressInput || !addressInput.value.trim()) {
+        alert('Будь ласка, введіть адресу доставки!');
+        addressInput?.focus();
         return;
     }
 
-    // Беремо текст, який ввів користувач
-    const address = addressInput.value;
+    // Перевірка авторизації (якщо треба)
+    // const user = JSON.parse(localStorage.getItem('currentUser'));
+    // if (!user) { window.location.href = '/login'; return; }
 
-    // Якщо рядок порожній — сваримось.
-    if (!address) {
-        alert('Будь ласка, введіть адресу!');
-        return;
-    }
+    // Тут поки імітація відправки (або розкоментуй код колеги для реальної)
+    // Для демо просто покажемо алерт
 
-    // Перевіряємо Авторизацію
-    // Дістаємо об'єкт поточного користувача, який ми зберегли при вході (Login)
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-
-    // Якщо user  null АБО у нього немає ID — значить він не залогінений.
-    if (!user || !user.id) {
-        alert("Будь ласка, увійдіть в систему, щоб зробити замовлення!");
-        // Перенаправляємо користувача на сторінку входу
-        window.location.href = '/login';
-        return;
-    }
-
-    // Маппінг
-    // Нам треба перетворити формат даних кошика в той формат, який чекає Java-сервер.
-    // У кошику: [{id: 1, quantity: 2}] -> Це означає "Піца №1 у кількості 2 шт"
-    // Сервер чекає: [1, 1] -> Просто список ID
-
-    let pizzaIds = [];
-    cart.forEach(item => {
-        // Цикл крутиться стільки разів, скільки піц цього виду замовили (item.quantity)
-        for(let i=0; i < item.quantity; i++) {
-            // parseInt гарантує, що ми відправляємо число, а не рядок
-            pizzaIds.push(parseInt(item.id));
-        }
-    });
-
-    // Формуємо фінальний об'єкт (JSON), який полетить на сервер.
+    // Формуємо реальні дані для відправки (якщо сервер готовий)
+    /*
     const orderData = {
-        clientId: parseInt(user.id),
-        address: address,
-        pizzaIds: pizzaIds
+        items: cart.map(i => ({ id: i.id, count: i.quantity })),
+        address: addressInput.value,
+        total: document.querySelector('.final-price')?.innerText || document.querySelector('.total-price')?.innerText
     };
+    */
 
-    // Відправляємо на сервер
-    try {
-        // fetch - це запит в інтернет (на наш сервер)
-        // await означає чекай, поки сервер відповість, перш ніж йти далі
-        const response = await fetch('/api/orders', {
-            method: 'POST', // Метод відправки даних
-            headers: { 'Content-Type': 'application/json' }, // Кажемо серверу, що шлемо JSON
-            body: JSON.stringify(orderData) // Перетворюємо об'єкт JS у текстовий рядок JSON
-        });
+    alert(`Замовлення прийнято!\nАдреса: ${addressInput.value}\nДякуємо, що обрали PizzaGo!`);
 
-        // response.ok = true, якщо статус відповіді 200-299 (Успіх)
-        if (response.ok) {
-            // Читаємо відповідь сервера (там має бути ID замовлення і сума)
-            const result = await response.json();
-            alert(`Замовлення №${result.id} успішно прийнято! Сума: ${result.totalAmount} грн`);
-
-            //Очищаємо кошик тільки після успішного замовлення!
-            localStorage.removeItem('pizzaCart');
-
-            // Повертаємо користувача на головну сторінку
-            window.location.href = '/';
-        } else {
-            // Якщо сервер повернув помилку
-            alert('Помилка сервера. Спробуйте пізніше.');
-        }
-    } catch (e) {
-        // Цей блок спрацює, якщо інтернет зник або сервер взагалі вимкнений
-        console.error(e);
-        alert('Не вдалося з\'єднатися з сервером.');
-    }
+    localStorage.removeItem('pizzaCart');
+    window.location.href = '/'; // На головну
 }
-//Запускаємо рендер при відкритті сторінки
-document.addEventListener('DOMContentLoaded', () => {
-    renderCart();
-});
+
+// Запуск при старті
+document.addEventListener('DOMContentLoaded', renderCart);

@@ -20,8 +20,8 @@ public class MenuController {
         // Називаємо цю коробочку "pizzaList"
         model.addAttribute("pizzaList", pizzas);
 
-        // 3. Відкриваємо файл index.html (який лежить в templates)
-        return "index";
+        // 3. Відкриваємо файл client-menu.html (який лежить в templates)
+        return "client-menu";
     }
 
     @GetMapping("/cart")

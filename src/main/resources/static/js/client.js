@@ -108,9 +108,11 @@ function checkAuthStatus() {
         //Якщо користувач увійшов
         //Замість іконки малюємо Ім'я та кнопку для виходу
         wrapper.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                <span style="font-weight: 600; font-size: 14px; color: #193948;">👤 ${user.name}</span>
-                <span id="btn-logout" style="color: #d32f2f; font-size: 12px; text-decoration: underline;">Вийти</span>
+            <div style="display: flex; flex-direction: row; align-items: center; line-height: 1.2;">
+                <span style="font-weight: bold; color: #193948; margin-right:10px;">${user.name}</span>
+                <a href="#" onclick="logout()" style="color: #d32f2f; text-decoration: none; font-weight: 600; font-size: 14px;">
+                    Вийти
+                </a>
             </div>
         `;
 
@@ -152,11 +154,4 @@ document.addEventListener('DOMContentLoaded', () => {
     //Перевіряємо, хто зайшов Гість чи Юзер і малюємо відповідну іконку
     checkAuthStatus();
 
-    //Налаштовуємо клік по кошику
-    // Ми робимо це тут, а не в HTML, щоб мати більше контролю
-    const cartWrapper = document.getElementById('cart-wrapper');
-    if (cartWrapper) {
-        // При кліку переходимо на сторінку /cart
-        cartWrapper.onclick = () => window.location.href = '/cart';
-    }
 });

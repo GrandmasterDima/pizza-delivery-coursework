@@ -14,23 +14,23 @@
 </head>
 <body>
 <header class="header">
-    <div class="header-logo">
-        <a href="/"><img th:src="@{/images/Logo.svg}" alt="" /></a>
+    <div class="logo">
+        <a  th:href="@{/}"><img th:src="@{/images/Logo.svg}" alt="" /></a>
     </div>
     <nav class="header-navigation">
-        <a href="#">Меню</a>
+        <a th:href="@{/}">Меню</a>
         <a href="#">Акції</a>
         <a href="#">Контакти</a>
     </nav>
     <div class="header-user-actions">
-        <div id="cart-wrapper" style="position: relative; cursor: pointer; margin-right: 15px;">
+        <a href="/cart" id="cart-wrapper" style="position: relative; cursor: pointer; margin-right: 15px; text-decoration: none; color: inherit; display: flex; align-items: center;">
             <svg class="header-cart" width="36" height="36">
                 <use th:href="@{/images/icons.svg#cart}"></use>
             </svg>
-        </div>
+        </a>
 
         <div id="user-wrapper" style="cursor: pointer; display: flex; align-items: center;">
-            <svg class="header-user" width="36" height="36">
+            <svg class="header-user" width="32" height="32">
                 <use th:href="@{/images/icons.svg#user}"></use>
             </svg>
         </div>
@@ -90,9 +90,7 @@
     <div class="footer-content">
         <div class="footer-col">
             <div class="logo">
-                <a href="./index.html"
-                ><img th:src="@{/images/logo-footer.svg}" alt=""
-                /></a>
+                <a  th:href="@{/}"><img th:src="@{/images/logo-footer.svg}" alt="" /></a>
             </div>
             <p class="footer-text">
                 Готуємо з любов'ю, доставляємо зі швидкістю світла!
@@ -100,7 +98,7 @@
         </div>
         <div class="footer-col">
             <ul class="footer-lists">
-                <li class="footer-menu"><a href="#">Меню</a></li>
+                <li class="footer-menu"><a th:href="@{/}">Меню</a></li>
                 <li class="footer-menu"><a href="#">Акції</a></li>
                 <li class="footer-menu"><a href="#">Доставка та оплата</a></li>
                 <li class="footer-menu"><a href="#">Про нас</a></li>

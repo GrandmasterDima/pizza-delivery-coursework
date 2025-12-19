@@ -7,34 +7,123 @@
     <link rel="stylesheet" th:href="@{/styles/cart.css}" />
 </head>
 <body>
-
 <header class="header">
-    <div class="header-logo"><a href="/"><img th:src="@{/images/Logo.svg}" alt="" /></a></div>
-    <nav class="header-navigation"><a href="/"> &larr; Повернутися до меню</a></nav>
+    <div class="logo">
+        <a  th:href="@{/}"><img th:src="@{/images/Logo.svg}" alt="" /></a>
+    </div>
+    <nav class="header-navigation">
+        <a th:href="@{/}">Меню</a>
+        <a href="#">Акції</a>
+        <a href="#">Контакти</a>
+    </nav>
+    <div class="header-user-actions">
+        <div class="header-user-actions">
+            <a th:href="@{/login}" class="header-icon-link" id="user-wrapper">
+                <svg class="header-user" width="36" height="36">
+                    <use th:href="@{/images/icons.svg#user}"></use>
+                </svg>
+            </a>
+        </div>
+    </div>
 </header>
 
-<div class="cart-container">
-    <div class="cart-header-flex">
-        <h1>Ваше замовлення</h1>
-        <button class="btn-clear" onclick="clearCart()">Очистити все </button>
-    </div>
+<main>
+    <div class="cart-container">
+        <div class="cart-header-flex">
+            <h2>Ваше замовлення</h2>
+            <button class="btn-clear" onclick="clearCart()">Очистити</button>
+        </div>
 
-    <div id="cart-items-list">
-        <p style="text-align: center; color: #888;">Завантаження...</p>
-    </div>
+        <div id="cart-items-list">
+            <p class="empty-message">Кошик порожній... поки що</p>
+        </div>
+        <div class="checkout-section">
+        <div class="total-section">
+            <span class="total-label">Всього до сплати:</span>
+            <span class="total-price"><span id="cart-total">0</span>₴</span>
+        </div>
 
-    <div class="total-section">
-        Всього: <span id="cart-total">0</span> ₴
+        <hr class="divider">
+        <div class="to-order">
+            <h3>Оформлення доставки</h3>
+            <div class="form-group">
+                <input type="text" id="clientAddress" placeholder="Вулиця, дім, квартира" required>
+            </div>
+            <button class="btn-order" onclick="submitOrder()">Замовити</button>
+        </div>
+        </div>
     </div>
+</main>
 
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-
-    <h3>Оформлення</h3>
-    <div class="form-group">
-        <input type="text" id="clientAddress" placeholder="Адреса доставки (Вулиця, дім, квартира)" required>
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-col">
+            <div class="logo">
+                <a  th:href="@{/}"><img th:src="@{/images/logo-footer.svg}" alt="" /></a>
+            </div>
+            <p class="footer-text">
+                Готуємо з любов'ю, доставляємо зі швидкістю світла!
+            </p>
+        </div>
+        <div class="footer-col">
+            <ul class="footer-lists">
+                <li class="footer-menu"><a th:href="@{/}">Меню</a></li>
+                <li class="footer-menu"><a href="#">Акції</a></li>
+                <li class="footer-menu"><a href="#">Доставка та оплата</a></li>
+                <li class="footer-menu"><a href="#">Про нас</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <ul class="footer-lists">
+                <li>
+                    <a href="tel:+380960000007" class="contact-phone"
+                    >+ 38 (096) 000 00 07</a
+                    >
+                </li>
+                <li><p>Щодня з 10:00 до 22:00</p></li>
+                <li><p>м. Київ, вул. Тараса Шевченка 5</p></li>
+                <li>
+                    <div class="footer-social-icons">
+                        <a href="#"
+                        ><svg width="22" height="37">
+                            <use th:href="@{/images/icons.svg#facebook}"></use>
+                        </svg>
+                        </a>
+                        <a href="#"
+                        ><svg width="33" height="33">
+                            <use th:href="@{/images/icons.svg#instagram}"></use>
+                        </svg>
+                        </a>
+                        <a href="#"
+                        ><svg width="36" height="27">
+                            <use th:href="@{/images/icons.svg#twitter}"></use>
+                        </svg>
+                        </a>
+                        <a href="#"
+                        ><svg width="30" height="35">
+                            <use th:href="@{/images/icons.svg#phone}"></use>
+                        </svg>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <ul class="footer-lists">
+                <li>
+                    <a class="footer-text-politic" href="#"
+                    >Політика конфіденційності</a
+                    >
+                </li>
+                <li>
+                    <p class="footer-text-rights">
+                        © 2025 PizzaGo. Всі права захищені.
+                    </p>
+                </li>
+            </ul>
+        </div>
     </div>
-    <button class="btn-order" onclick="submitOrder()">Замовити</button>
-</div>
+</footer>
 <script th:src="@{/js/cart.js}"></script>
 </body>
 </html>

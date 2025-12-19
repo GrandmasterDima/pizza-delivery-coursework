@@ -9,10 +9,18 @@
 <body>
 
 <header class="header">
-    <div class="header-logo"><a href="/"><img th:src="@{/images/Logo.svg}" alt="" /></a></div>
-    <nav class="header-navigation"><a href="/"> &larr; На головну</a></nav>
+    <div class="logo">
+        <a  th:href="@{/}"><img th:src="@{/images/Logo.svg}" alt="" /></a>
+    </div>
+    <nav class="header-navigation">
+        <a th:href="@{/}">Меню</a>
+        <a href="#">Акції</a>
+        <a href="#">Контакти</a>
+    </nav>
+    <div class="header-user-actions">
+    </div>
 </header>
-
+<main>
 <div class="auth-container">
     <h2>Вхід в систему</h2>
     <form onsubmit="handleLogin(event)">
@@ -30,7 +38,76 @@
         Немає акаунту? <a href="/register">Зареєструватися</a>
     </div>
 </div>
-
+</main>
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-col">
+            <div class="logo">
+                <a  th:href="@{/}"><img th:src="@{/images/logo-footer.svg}" alt="" /></a>
+            </div>
+            <p class="footer-text">
+                Готуємо з любов'ю, доставляємо зі швидкістю світла!
+            </p>
+        </div>
+        <div class="footer-col">
+            <ul class="footer-lists">
+                <li class="footer-menu"><a th:href="@{/}">Меню</a></li>
+                <li class="footer-menu"><a href="#">Акції</a></li>
+                <li class="footer-menu"><a href="#">Доставка та оплата</a></li>
+                <li class="footer-menu"><a href="#">Про нас</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <ul class="footer-lists">
+                <li>
+                    <a href="tel:+380960000007" class="contact-phone"
+                    >+ 38 (096) 000 00 07</a
+                    >
+                </li>
+                <li><p>Щодня з 10:00 до 22:00</p></li>
+                <li><p>м. Київ, вул. Тараса Шевченка 5</p></li>
+                <li>
+                    <div class="footer-social-icons">
+                        <a href="#"
+                        ><svg width="22" height="37">
+                            <use th:href="@{/images/icons.svg#facebook}"></use>
+                        </svg>
+                        </a>
+                        <a href="#"
+                        ><svg width="33" height="33">
+                            <use th:href="@{/images/icons.svg#instagram}"></use>
+                        </svg>
+                        </a>
+                        <a href="#"
+                        ><svg width="36" height="27">
+                            <use th:href="@{/images/icons.svg#twitter}"></use>
+                        </svg>
+                        </a>
+                        <a href="#"
+                        ><svg width="30" height="35">
+                            <use th:href="@{/images/icons.svg#phone}"></use>
+                        </svg>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <ul class="footer-lists">
+                <li>
+                    <a class="footer-text-politic" href="#"
+                    >Політика конфіденційності</a
+                    >
+                </li>
+                <li>
+                    <p class="footer-text-rights">
+                        © 2025 PizzaGo. Всі права захищені.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
 <script th:src="@{/js/login.js}"></script>
 </body>
 </html>

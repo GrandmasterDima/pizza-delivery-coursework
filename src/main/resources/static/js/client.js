@@ -62,7 +62,7 @@ function checkAuthStatus() {
     if (user) {
         wrapper.innerHTML = `
             <div style="display: flex; flex-direction: row; align-items: center; line-height: 1.2;">
-                <span style="font-weight: bold; color: #193948; margin-right:10px;">${user.name}</span>
+                <span style="font-weight: bold; color: #193948; margin:0 10px;">${user.name}</span>
                 <a href="#" id="logout-btn" style="color: red;text-decoration: none;">Вийти</a>
             </div>
         `;
@@ -81,12 +81,6 @@ function checkAuthStatus() {
     }
 }
 
-function logout() {
-    if(confirm("Вийти з акаунту?")) {
-        localStorage.removeItem('currentUser');
-        window.location.href = '/';
-    }
-}
 
 function handleUserClick(event) {
     if(event) event.preventDefault();
@@ -108,19 +102,32 @@ function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMenu');
     const body = document.body;
 
-    if(burgerBtn) burgerBtn.classList.toggle('active');
-    if(mobileMenu) mobileMenu.classList.toggle('open');
-
-    if (mobileMenu && mobileMenu.classList.contains('open')) {
-        body.style.overflow = 'hidden';
-    } else {
-        body.style.overflow = 'auto';
+    if (burgerBtn) burgerBtn.classList.toggle('active');
+    if (mobileMenu) {
+        mobileMenu.classList.toggle('open');
+        if (mobileMenu.classList.contains('open')) {
+            body.style.overflow = 'hidden';
+        } else {
+            body.style.overflow = 'auto';
+        }
+    }
+}
+async function logout(event) {
+    if (event) event.preventDefault();
+    try {
+        const response = await fetch('/logout', { method: 'POST' });
+        localStorage.removeItem('currentUser');
+        window.location.href = '/';
+    } catch (err) {
+        console.error("Помилка при виході:", err);
+        localStorage.removeItem('currentUser');
+        window.location.href = '/';
     }
 }
 function filterMenu() {
     const checkboxes = document.querySelectorAll('.filter-item input:checked');
     const selectedValues = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
-    const cards = document.querySelectorAll('.card:not(.card-add-new)'); // Не ховаємо кнопку "Додати"
+    const cards = document.querySelectorAll('.card:not(.card-add-new)');
 
     const noFiltersSelected = selectedValues.length === 0;
 
@@ -156,9 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-<script>
-  window.addEventListener('scroll', () => {
-    const header = document.querySelector('.header');
-    header.classList.toggle('scrolled', window.scrollY > 10);
-  });
-</script>
+window.addEventListener('scroll', () => {
+      const header = document.querySelector('.header');
+      header.classList.toggle('scrolled', window.scrollY > 10);
+    });
